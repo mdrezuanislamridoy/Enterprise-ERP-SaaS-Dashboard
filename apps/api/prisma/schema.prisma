@@ -1,0 +1,257 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  clientId  String   @unique
+  name      String
+  email     String
+  plan      String
+  mrr       String
+  status    String
+  joined    String
+  stack     String
+  contracts Contract[]
+}
+
+model Contract {
+  id        String   @id @default(cuid())
+  contractId String  @unique
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [clientId])
+  service   String
+  value     String
+  status    String
+  deadline  String
+}
+
+model Employee {
+  id             String  @id @default(cuid())
+  name           String
+  role           String
+  utilization    Int
+  performance    Int
+  burnoutRisk    String
+  aiAssisted     Boolean @default(false)
+  dept           String?
+  email          String?
+  salary         String?
+  status         String?
+  joined         String?
+}
+
+model SystemAlert {
+  id        String  @id @default(cuid())
+  alertId   String  @unique
+  service   String
+  metric    String
+  threshold String
+  status    String
+}
+
+model RevenueMetric {
+  id    String @id @default(cuid())
+  month String
+  mrr   Int
+  costs Int
+  aws   Int
+}
+
+model TopService {
+  id       String @id @default(cuid())
+  name     String
+  category String
+  deals    Int
+  revenue  String
+  trend    Float
+}
+
+model Kpi {
+  id             String @id @default(cuid())
+  label          String
+  value          String
+  change         Float
+  icon           String
+  colorClass     String
+  darkColorClass String
+  border         String
+}
+
+model RevenueByCategory {
+  id    String @id @default(cuid())
+  name  String
+  value Int
+}
+
+model ClientGrowth {
+  id      String @id @default(cuid())
+  month   String
+  new     Int
+  churned Int
+  net     Int
+}
+
+model Activity {
+  id     String @id @default(cuid())
+  user   String
+  action String
+  target String
+  time   String
+  icon   String
+  color  String
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String
+  role     String @default("admin")
+}
+
+model Insight {
+  id    String @id @default(cuid())
+  title String
+  desc  String
+  type  String
+  icon  String
+  color String
+  bg    String
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ServerNode {
+  id          String @id @default(cuid())
+  nodeId      String @unique
+  name        String
+  region      String
+  status      String
+  cpuUsage    Int
+  memoryUsage Int
+  uptime      String
+}
+
+model ApiMetric {
+  id        String @id @default(cuid())
+  endpoint  String
+  requests  Int
+  latency   Int
+  errorRate Float
+  status    String
+}
+
+model Billing {
+  id          String @id @default(cuid())
+  service     String
+  cost        Float
+  trend       Float
+  status      String
+  lastUpdated String
+}
+
+model Proposal {
+  id          String @id @default(cuid())
+  proposalId  String @unique
+  clientName  String
+  title       String
+  value       String
+  status      String
+  date        String
+}
+
+model Sla {
+  id          String @id @default(cuid())
+  slaId       String @unique
+  clientName  String
+  service     String
+  uptime      String
+  status      String
+}
+
+model SkillMatrix {
+  id        String @id @default(cuid())
+  employee  String
+  skill     String
+  level     String
+  certified Boolean @default(false)
+}
+
+model Performance {
+  id        String @id @default(cuid())
+  employee  String
+  period    String
+  score     Int
+  rating    String
+  notes     String?
+}
+
+model Allocation {
+  id        String @id @default(cuid())
+  employee  String
+  project   String
+  role      String
+  hours     Int
+  startDate String
+  endDate   String
+}
+
+model Invoice {
+  id          String @id @default(cuid())
+  invoiceId   String @unique
+  clientName  String
+  amount      String
+  status      String
+  dueDate     String
+  issuedDate  String
+}
+
+model Payroll {
+  id          String @id @default(cuid())
+  employee    String
+  period      String
+  salary      String
+  deductions  String
+  netPay      String
+  status      String
+}
+
+model License {
+  id          String @id @default(cuid())
+  software    String
+  vendor      String
+  seats       Int
+  cost        String
+  renewalDate String
+  status      String
+}
+
+model DeliveryReport {
+  id          String @id @default(cuid())
+  project     String
+  client      String
+  status      String
+  completion  Int
+  dueDate     String
+}
+
+model MarginAnalysis {
+  id          String @id @default(cuid())
+  project     String
+  revenue     Float
+  cost        Float
+  margin      Float
+  status      String
+}
