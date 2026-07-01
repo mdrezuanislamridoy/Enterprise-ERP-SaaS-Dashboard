@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nexus_erp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/nexus_erp?schema=public
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  remote-analytics:
+    build:
+      context: .
+      dockerfile: apps/remote-analytics/Dockerfile
+    ports:
+      - "5001:80"
+
+  host:
+    build:
+      context: .
+      dockerfile: apps/host/Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+      - remote-analytics
+
+volumes:
+  postgres_data:
